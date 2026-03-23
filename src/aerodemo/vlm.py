@@ -164,6 +164,37 @@ class VortexLatticeMethod:
         self._panels = panels
         return panels, x_cp, y_cp, z_cp, normal
 
+    @staticmethod
+    def _oswald_efficiency(AR: float, taper_ratio: float) -> float:
+        """
+        Estimate Oswald span efficiency factor for a tapered wing.
+
+        Uses the Grosu correlation:
+
+        .. math::
+
+            e = \\frac{1}{1 + 0.12 \\, AR \\, \\left(\\frac{1-\\lambda}{1+\\lambda}\\right)^2}
+
+        which gives ``e = 1`` for an elliptic (untapered) planform and
+        decreases toward rectangular or highly tapered wings.
+
+        Parameters
+        ----------
+        AR : float
+            Wing aspect ratio.
+        taper_ratio : float
+            Wing taper ratio :math:`\\lambda = c_t / c_r`.
+
+        Returns
+        -------
+        float
+            Oswald efficiency factor (0 < e ≤ 1).
+        """
+        if AR <= 0:
+            return 1.0
+        lam = taper_ratio
+        return 1.0 / (1.0 + 0.12 * AR * ((1 - lam) / (1 + lam)) ** 2)
+
     def solve(self, alpha_deg: float):
         """
         Solve the VLM for given angle of attack.
@@ -203,7 +234,7 @@ class VortexLatticeMethod:
 
         # Small upstream offset to place the control point downstream of the
         # vortex line, ensuring the trailing legs induce downwash (not upwash).
-        _UPSTREAM_OFFSET = 1e-8
+        upstream_offset = 1e-8
 
         for i in range(n):
             xc, yc, zc = x_cp[i], y_cp[i], z_cp[i]
@@ -242,10 +273,10 @@ class VortexLatticeMethod:
                     return (1 / (4 * np.pi)) * (-dz_leg) / r**2 * (1 + cos_theta)
 
                 w_trail_l = _semi_inf_vortex_w(
-                    xc - x_v - _UPSTREAM_OFFSET, yc - (y_j - dy / 2), zc - p["z"]
+                    xc - x_v - upstream_offset, yc - (y_j - dy / 2), zc - p["z"]
                 )
                 w_trail_r = -_semi_inf_vortex_w(
-                    xc - x_v - _UPSTREAM_OFFSET, yc - (y_j + dy / 2), zc - p["z"]
+                    xc - x_v - upstream_offset, yc - (y_j + dy / 2), zc - p["z"]
                 )
 
                 AIC[i, j] = w_bound + w_trail_l + w_trail_r
@@ -287,11 +318,9 @@ class VortexLatticeMethod:
         cl_span = lift_per_span * 2 / (wing.root_chord)
 
         # Induced drag via Trefftz-plane integration (approximate)
-        # CDi = CL^2 / (pi * AR * e) - use e ~ 1 for elliptic, correction for taper
+        # CDi = CL^2 / (pi * AR * e)
         AR = wing.aspect_ratio
-        # Approximate Oswald factor for tapered wing (Grosu correlation)
-        lam = wing.taper_ratio
-        e = 1.0 / (1.0 + 0.12 * AR * (1 - lam) ** 2 / (1 + lam) ** 2) if AR > 0 else 1.0
+        e = self._oswald_efficiency(AR, wing.taper_ratio)
         CDi = CL**2 / (np.pi * AR * e) if AR > 0 else 0.0
 
         return {

@@ -178,10 +178,16 @@ class NACAFourDigit:
         if self.p == 0 or self.m == 0:
             return 0.0
         m, p = self.m, self.p
-        # Thin-airfoil result for NACA 4-digit; p is in (0, 1] by construction
-        # Use log1p for numerical stability: log(1-p) = log1p(-p)
+        # Thin-airfoil result for NACA 4-digit camber line (Abbott & Von Doenhoff,
+        # eq. 4.48). The integral of the camber-line slope over [0,1] yields:
+        #   alpha_L0 = -(m/p^2) * [ p^2/2  - p  +  (1-p)*ln(1-p)  +  p*ln(p)  + 1/2 ]
+        # log1p(-p) = ln(1-p) is used for numerical stability when p is close to 1.
         alpha_L0 = -m / p**2 * (
-            0.5 * p**2 - p + (1 - p) * np.log1p(-p) + p * np.log(p) + 0.5
+            0.5 * p**2          # p^2/2 term
+            - p                 # -p term
+            + (1 - p) * np.log1p(-p)  # (1-p)*ln(1-p) term
+            + p * np.log(p)     # p*ln(p) term
+            + 0.5               # constant of integration = 1/2
         )
         return float(alpha_L0)
 

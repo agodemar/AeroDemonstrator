@@ -1,5 +1,9 @@
 # AeroDemonstrator
 
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://agodemar.github.io/AeroDemonstrator/)
+
+**Documentation:** https://agodemar.github.io/AeroDemonstrator/
+
 A collection of aerodynamic demonstration projects showcasing the features of
 airfoils, finite wings, wing–fuselage, and complete aircraft configurations
 (wing–fuselage–horizontal tail–vertical tail) including movable control

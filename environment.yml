@@ -1,0 +1,13 @@
+name: aerodemo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.9
+  - numpy>=1.20,!=1.19.4
+  - matplotlib
+  - pathlib
+  - scipy>=1.10
+  - jupyter>=1.0
+  - notebook>=7.0
+  - ipykernel>=6.0

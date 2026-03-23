@@ -14,8 +14,32 @@ Optional (for OpenVSP notebooks):
 
 - ``openvsp`` Python API — see https://openvsp.org
 
-Quick Start
------------
+Quick Start (conda)
+-------------------
+
+The recommended way to set up the environment is with `conda
+<https://docs.conda.io>`_, using the provided ``environment.yml`` file.
+
+1. **Clone the repository**::
+
+      git clone https://github.com/agodemar/AeroDemonstrator.git
+      cd AeroDemonstrator
+
+2. **Create and activate the conda environment**::
+
+      conda env create -f environment.yml
+      conda activate aerodemo
+
+3. **Install the package in editable mode**::
+
+      pip install -e .
+
+4. **Launch Jupyter**::
+
+      jupyter notebook notebooks/
+
+Quick Start (pip)
+-----------------
 
 1. **Clone the repository**::
 

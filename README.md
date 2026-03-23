@@ -44,6 +44,26 @@ AeroDemonstrator/
 
 ## Installation
 
+### Using conda (recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/agodemar/AeroDemonstrator.git
+cd AeroDemonstrator
+
+# Create and activate the conda environment
+conda env create -f environment.yml
+conda activate aerodemo
+
+# Install the package in editable mode
+pip install -e .
+
+# (Optional) Install OpenVSP for 3D geometry and VSPAero analysis
+pip install openvsp
+```
+
+### Using pip
+
 ```bash
 # Clone the repository
 git clone https://github.com/agodemar/AeroDemonstrator.git
@@ -58,6 +78,8 @@ pip install -e ".[docs]"
 # (Optional) Install OpenVSP for 3D geometry and VSPAero analysis
 pip install openvsp
 ```
+
+> **Note:** The `pip install openvsp` step is optional for both installation methods and is only required for the `03_wing_fuselage` and `04_complete_aircraft` notebooks.
 
 ## Running the Notebooks
 

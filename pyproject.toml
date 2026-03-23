@@ -24,7 +24,7 @@ docs = [
     "sphinx-rtd-theme>=1.3",
     "myst-parser>=2.0",
     "nbsphinx>=0.9",
-    "pandoc",
+    # pandoc must be installed via system package manager (e.g. apt, brew)
 ]
 dev = [
     "pytest>=7.0",

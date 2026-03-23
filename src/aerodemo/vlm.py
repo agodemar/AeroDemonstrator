@@ -201,6 +201,10 @@ class VortexLatticeMethod:
         AIC = np.zeros((n, n))
         rhs = np.zeros(n)
 
+        # Small upstream offset to place the control point downstream of the
+        # vortex line, ensuring the trailing legs induce downwash (not upwash).
+        _UPSTREAM_OFFSET = 1e-8
+
         for i in range(n):
             xc, yc, zc = x_cp[i], y_cp[i], z_cp[i]
             for j in range(n):
@@ -238,10 +242,10 @@ class VortexLatticeMethod:
                     return (1 / (4 * np.pi)) * (-dz_leg) / r**2 * (1 + cos_theta)
 
                 w_trail_l = _semi_inf_vortex_w(
-                    xc - x_v - 1e-8, yc - (y_j - dy / 2), zc - p["z"]
+                    xc - x_v - _UPSTREAM_OFFSET, yc - (y_j - dy / 2), zc - p["z"]
                 )
                 w_trail_r = -_semi_inf_vortex_w(
-                    xc - x_v - 1e-8, yc - (y_j + dy / 2), zc - p["z"]
+                    xc - x_v - _UPSTREAM_OFFSET, yc - (y_j + dy / 2), zc - p["z"]
                 )
 
                 AIC[i, j] = w_bound + w_trail_l + w_trail_r

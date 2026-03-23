@@ -178,8 +178,11 @@ class NACAFourDigit:
         if self.p == 0 or self.m == 0:
             return 0.0
         m, p = self.m, self.p
-        # Thin-airfoil result for NACA 4-digit
-        alpha_L0 = -m / p**2 * (0.5 * p**2 - p + (1 - p) * np.log(1 - p) + p * np.log(p) + 0.5)
+        # Thin-airfoil result for NACA 4-digit; p is in (0, 1] by construction
+        # Use log1p for numerical stability: log(1-p) = log1p(-p)
+        alpha_L0 = -m / p**2 * (
+            0.5 * p**2 - p + (1 - p) * np.log1p(-p) + p * np.log(p) + 0.5
+        )
         return float(alpha_L0)
 
     def cl(self, alpha_deg: float) -> float:
@@ -259,7 +262,6 @@ class NACAFiveDigit:
                 f"Unsupported 5-digit camber code '{designation[:3]}'. "
                 f"Supported codes: {list(self._CAMBER_PARAMS.keys())}"
             )
-        self._k1, self._p, _ = self._CAMBER_PARAMS[key][0], self._CAMBER_PARAMS[key][1], self._CAMBER_PARAMS[key][2]
         # k1 and p from lookup tables (Abbott & Von Doenhoff, Table 5)
         _k1_table = {210: 361.4, 220: 51.64, 230: 15.957, 240: 6.643, 250: 3.230}
         self._k1 = _k1_table[key]

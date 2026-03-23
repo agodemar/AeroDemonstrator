@@ -62,8 +62,11 @@ conda activate aerodemo
 # Install the package in editable mode
 pip install -e .
 
-# (Optional) Install OpenVSP for 3D geometry and VSPAero analysis
-pip install openvsp
+# Install OpenVSP for 3D geometry and VSPAero analysis
+# Only at the first installation of aerodemo,
+# download OpenVSP with Python bindings in OPENVSP_DIR, navigate to OPENVSP_DIR/python 
+# and
+pip install -r requirements.txt
 ```
 
 ### Using pip

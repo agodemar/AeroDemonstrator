@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "A collection of aerodynamic demonstrations for airfoils, finite wings, and aircraft configurations"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "numpy>=1.20",
     "pathlib",

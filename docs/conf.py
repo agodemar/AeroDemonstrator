@@ -1,10 +1,21 @@
 """Sphinx configuration for AeroDemonstrator documentation."""
 
 import os
+import shutil
 import sys
 
 # Add source directory to path for autodoc
 sys.path.insert(0, os.path.abspath('../src'))
+
+# Copy notebooks into the docs source tree so nbsphinx can process them.
+# A symlink would cause Sphinx's symlink-resolving path logic to compute
+# incorrect relative paths for notebook output images.
+_notebooks_src = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'notebooks'))
+_notebooks_dst = os.path.join(os.path.dirname(__file__), 'notebooks')
+if os.path.isdir(_notebooks_src):
+    if os.path.isdir(_notebooks_dst):
+        shutil.rmtree(_notebooks_dst)
+    shutil.copytree(_notebooks_src, _notebooks_dst)
 
 # -- Project information ------------------------------------------------
 project = 'AeroDemonstrator'
@@ -21,6 +32,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'myst_parser',
+    'nbsphinx',
 ]
 
 templates_path = ['_templates']
@@ -73,3 +85,8 @@ intersphinx_mapping = {
 
 # -- Options for MathJax -----------------------------------------------
 mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+
+# -- Options for nbsphinx -------------------------------------------------
+# Use pre-computed cell outputs; do not re-execute notebooks during the build
+nbsphinx_execute = 'never'
+

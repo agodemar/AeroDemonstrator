@@ -382,6 +382,11 @@ class FiniteWing:
             self._set_parm(wing_id, "Twist", g, seg.twist_deg)
             self._set_parm(wing_id, "Twist_Location", g, seg.twist_ref_loc)
 
+            # Per-section discretization controls.
+            self._set_optional_parm(wing_id, "SectTess_U", g, seg.num_U)
+            self._set_optional_parm(wing_id, "InCluster", g, seg.cluster_root)
+            self._set_optional_parm(wing_id, "OutCluster", g, seg.cluster_tip)
+
             # Per-section flag, when present.
             self._set_optional_parm(
                 wing_id,

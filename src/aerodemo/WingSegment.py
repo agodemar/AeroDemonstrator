@@ -38,8 +38,24 @@ class WingSegment:
         twist_ref_loc = 0.25
             Twist reference location along the chord.
             0.25 means twist about the quarter-chord.
+
+        num_U = 5
+            Number of spanwise tessellation panels for this section
+            (OpenVSP parameter `SectTess_U`).
+
+        cluster_root = 1.0
+            Root-side clustering factor for this section
+            (OpenVSP parameter `InCluster`).
+            1.0 gives near-uniform spacing.
+
+        cluster_tip = 1.0
+            Tip-side clustering factor for this section
+            (OpenVSP parameter `OutCluster`).
+            1.0 gives near-uniform spacing.
     """
     id: str = "WS1"
+    
+    # Geometry
     span: float = 5.0
     root_chord: float = 1.5
     tip_chord: float = 1.0
@@ -48,6 +64,19 @@ class WingSegment:
     twist_deg: float = 0.0
     sweep_ref_loc: float = 0.25
     twist_ref_loc: float = 0.25
+
+    # Discretization
+    num_U: int = 5
+    cluster_root: float = 1.0
+    cluster_tip: float = 1.0
+
+    def __post_init__(self) -> None:
+        if self.num_U < 1:
+            raise ValueError("num_U must be >= 1.")
+        if self.cluster_root <= 0.0:
+            raise ValueError("cluster_root must be > 0.")
+        if self.cluster_tip <= 0.0:
+            raise ValueError("cluster_tip must be > 0.")
 
     def __str__(self) -> str:
         return (
@@ -60,7 +89,10 @@ class WingSegment:
             f"  dihedral_deg: {self.dihedral_deg:.3f} deg\n"
             f"  twist_deg: {self.twist_deg:.3f} deg\n"
             f"  sweep_ref_loc: {self.sweep_ref_loc:.3f} (-)\n"
-            f"  twist_ref_loc: {self.twist_ref_loc:.3f} (-)"
+            f"  twist_ref_loc: {self.twist_ref_loc:.3f} (-)\n"
+            f"  num_U: {self.num_U:d} (-)\n"
+            f"  cluster_root: {self.cluster_root:.3f} (-)\n"
+            f"  cluster_tip: {self.cluster_tip:.3f} (-)"
         )
 
 
